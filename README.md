@@ -5,6 +5,8 @@
 
 An AI-powered system to automatically extract IBAN and bank account information from vendor invoices using Anthropic Claude API, designed for Dynamics GP integration.
 
+*Project to automate extraction and verification of payees on invoices using AI*
+
 ---
 
 ## 📋 Table of Contents
