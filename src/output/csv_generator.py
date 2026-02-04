@@ -5,7 +5,7 @@ Chartered Accountants Ireland
 """
 
 import csv
-from typing import List, Dict
+from typing import List, Dict, Optional
 from pathlib import Path
 from datetime import datetime
 

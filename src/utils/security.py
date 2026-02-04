@@ -8,9 +8,6 @@ import hashlib
 import re
 from typing import Optional
 from cryptography.fernet import Fernet
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2
-import base64
 
 from config.settings import settings
 from src.utils.logger import get_logger

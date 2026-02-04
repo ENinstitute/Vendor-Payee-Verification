@@ -48,3 +48,6 @@ colorlog==6.9.0
 
 # Email Notifications
 secure-smtplib==0.1.1
+
+# Web Interface
+streamlit==1.31.0
