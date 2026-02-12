@@ -229,7 +229,8 @@ def run_training(uploaded_files, confidence_threshold, max_workers):
                     )
                 
                 with col2:
-                    success_rate = (results.get('successful', 0) / results.get('total', 1)) * 100
+                    total_count = results.get('total', 0) or 1
+                    success_rate = (results.get('successful', 0) / total_count) * 100
                     st.metric(
                         "Success Rate",
                         f"{success_rate:.1f}%",

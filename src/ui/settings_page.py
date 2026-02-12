@@ -72,6 +72,8 @@ def render_settings_page():
         st.markdown("#### 🎯 AI Model")
         
         model_options = [
+            "claude-sonnet-4-5-20250929",
+            "claude-opus-4-6",
             "claude-3-5-sonnet-20241022",
             "claude-3-opus-20240229",
             "claude-3-sonnet-20240229",
@@ -88,8 +90,9 @@ def render_settings_page():
         
         st.markdown("""
         **Recommendations:**
-        - **Sonnet**: Best balance between speed and accuracy ⭐
-        - **Opus**: Maximum accuracy, slower
+        - **Claude Sonnet 4.5**: Latest model, best balance ⭐
+        - **Claude Opus 4**: Maximum accuracy, most capable
+        - **Claude 3.5 Sonnet**: Previous generation, reliable
         - **Haiku**: Faster, lower accuracy
         """)
         

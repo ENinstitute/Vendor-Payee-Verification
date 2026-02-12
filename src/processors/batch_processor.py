@@ -187,11 +187,24 @@ class BatchProcessor:
         # Try extracting from filename (e.g., "VEND001_invoice.pdf" -> "VEND001")
         parts = invoice_path.stem.split('_')
         if parts:
-            potential_id = parts[0]
+            potential_id = parts[0].strip()
             if potential_id.isalnum():
                 return potential_id
         
-        return None
+        # Try extracting from filename with " - " separator (e.g., "AC004 - Access.pdf" -> "AC004")
+        if ' - ' in invoice_path.stem:
+            potential_id = invoice_path.stem.split(' - ')[0].strip()
+            if potential_id:
+                return potential_id
+        
+        # Try extracting from filename with " -" separator (e.g., "AC017 -Name.pdf" -> "AC017")
+        if ' -' in invoice_path.stem:
+            potential_id = invoice_path.stem.split(' -')[0].strip()
+            if potential_id:
+                return potential_id
+        
+        # Fallback: use the full stem as vendor ID
+        return invoice_path.stem.strip() if invoice_path.stem.strip() else None
     
     def _generate_summary(self, results: List[Dict]) -> Dict:
         """Generate summary statistics from results"""

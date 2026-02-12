@@ -55,6 +55,9 @@ class AnthropicClient:
             # Create prompt for pattern recognition
             prompt = self._create_pattern_recognition_prompt()
             
+            # Build content block based on document type
+            content_block = self._build_content_block(document_data)
+            
             # Call Claude API
             message = self.client.messages.create(
                 model=self.model,
@@ -64,14 +67,7 @@ class AnthropicClient:
                     {
                         "role": "user",
                         "content": [
-                            {
-                                "type": "image",
-                                "source": {
-                                    "type": "base64",
-                                    "media_type": document_data['media_type'],
-                                    "data": document_data['data']
-                                }
-                            },
+                            content_block,
                             {
                                 "type": "text",
                                 "text": prompt
@@ -119,6 +115,9 @@ class AnthropicClient:
             # Create extraction prompt
             prompt = self._create_extraction_prompt(pattern)
             
+            # Build content block based on document type
+            content_block = self._build_content_block(document_data)
+            
             # Call Claude API
             message = self.client.messages.create(
                 model=self.model,
@@ -128,14 +127,7 @@ class AnthropicClient:
                     {
                         "role": "user",
                         "content": [
-                            {
-                                "type": "image",
-                                "source": {
-                                    "type": "base64",
-                                    "media_type": document_data['media_type'],
-                                    "data": document_data['data']
-                                }
-                            },
+                            content_block,
                             {
                                 "type": "text",
                                 "text": prompt
@@ -158,25 +150,40 @@ class AnthropicClient:
             logger.error(f"Error extracting data: {str(e)}")
             raise
     
+    def _build_content_block(self, document_data: Dict) -> Dict:
+        """Build the appropriate content block for Claude API based on document type"""
+        doc_type = document_data.get('type', 'image')
+        
+        if doc_type == 'document':
+            # PDF document - use native document type
+            return {
+                "type": "document",
+                "source": {
+                    "type": "base64",
+                    "media_type": document_data['media_type'],
+                    "data": document_data['data']
+                }
+            }
+        else:
+            # Image - use image type
+            return {
+                "type": "image",
+                "source": {
+                    "type": "base64",
+                    "media_type": document_data['media_type'],
+                    "data": document_data['data']
+                }
+            }
+    
     def _read_pdf(self, pdf_path: str) -> Dict:
-        """Read PDF file and convert to base64"""
-        from pdf2image import convert_from_path
-        from io import BytesIO
-        
-        # Convert first page to image
-        images = convert_from_path(pdf_path, first_page=1, last_page=1)
-        
-        if not images:
-            raise ValueError("Could not convert PDF to image")
-        
-        # Convert image to base64
-        buffer = BytesIO()
-        images[0].save(buffer, format='PNG')
-        image_data = base64.b64encode(buffer.getvalue()).decode('utf-8')
+        """Read PDF file and encode to base64 for native Claude PDF support"""
+        with open(pdf_path, 'rb') as f:
+            pdf_data = base64.b64encode(f.read()).decode('utf-8')
         
         return {
-            'media_type': 'image/png',
-            'data': image_data
+            'type': 'document',
+            'media_type': 'application/pdf',
+            'data': pdf_data
         }
     
     def _read_image(self, image_path: str) -> Dict:
