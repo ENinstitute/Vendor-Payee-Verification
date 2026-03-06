@@ -13,7 +13,7 @@ from src.validators.iban_validator import iban_validator
 
 logger = get_logger(__name__)
 
-
+#Iban Validation algorithm from line 44
 class DataValidator:
     """Validates extracted data quality and consistency"""
     
